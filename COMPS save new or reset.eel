@@ -1,0 +1,6 @@
+@import COMP functions.eel
+
+    
+
+
+Save_Comp(GetUserComp("Save New or Reset Comp"),#compname);
