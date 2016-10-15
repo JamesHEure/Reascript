@@ -1,3 +1,13 @@
+//@description Utility to store, recall and navigate take and item comps
+//@version 1.0
+//@author James H Eure
+//@about
+//  # ReaL Item Comps
+//  more info and tutorial coming soon.
+//@changelog
+// + initial GuitHub release
+
+
 @import COMP gfx and string functions.eel
 
 function GetUserComp(title) ( GetUserInputs(title, 1, "alias", #compname) );
