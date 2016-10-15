@@ -1,3 +1,8 @@
+//@description gfx and string library for use with COMPS Display
+//@version 1.0
+//@author James H Eure
+
+
 //beginf color functions 
 function setcolor(hex)
   ( gfx_r= ((hex>>16)&255)/255; gfx_g= ((hex>>8)&255)/255; gfx_b= (hex>>0&255)/255;  );
