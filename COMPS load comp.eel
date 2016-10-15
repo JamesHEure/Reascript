@@ -1,2 +1,0 @@
-@import COMP functions.eel
-load_comp(GetUserComp("Load Comp"));
