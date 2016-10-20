@@ -1,0 +1,96 @@
+//@description Group Defeat
+//@version 1.0
+//@author JamesHE
+//@about
+//  # Use JamesHE_Group Defeat Set to assign a Group as Defeated
+//  # Running this action Toggles the script on / off (on first toggle off, choose to terminate the script and rememberr
+//  # If grouping is enabled and any selected item is in a Defeated Group. REAPER'S Grouping will be disabled
+//  # "Options: Selecting one grouped item selects group" is obeyed - So this is a way to define a group for selection only
+//  # Groups are stored in each Project Extended state. 
+//  * Currently non-functional with unsaved projects. 
+//  * Currently no way to delete ExtState data. 
+
+
+
+function GroupDefeat()
+//local(firstrun,firstselected,found,groupid,i,idx,lastknown,newselection,restate,selectedcache,statecache)
+(
+ 
+    
+    newselection || !firstrun ? (
+      __truns+=1; //debugging info
+      !firstrun ? lastknown=GetToggleCommandState(1156);
+      firstrun=1;
+      
+      //ON new group selection, also look for Groups Enabled Toggle change
+      statecache!=GetToggleCommandState(1156) ? ( statecache=lastknown=GetToggleCommandState(1156);   restate=1; );
+      
+      selectedcache=CountSelectedMediaItems();
+      firstselected=GetSelectedMediaItem(0, 0);
+      
+      //select items if Grouping is "on" and group selection is enabled
+      lastknown && !GetToggleCommandState(1156) && GetToggleCommandState(41156) ? (
+       // Main_OnCommand(1156,0);   //turn on grouping 
+        Main_OnCommand(40034,0); //select items
+        __didtog+=1;//debuging info
+      );
+      
+      i=0;
+      while( !found && i<=selectedcache ) (
+        groupid=GetMediaItemInfo_Value(GetSelectedMediaItem(project, i), "I_GROUPID");
+        groupid  ? (
+          previouscheck=groupid;
+          idx=0;
+          while( EnumProjExtState(project, #extname, idx, #keyOutOptional, #valOutOptional) && !found ) (
+            matchi("Group %03i",#keyOutOptional,storedgroupid);
+            storedgroupid==groupid ? found=1;
+            idx+=1;
+          );
+        );
+        i+=1;
+      );
+      found ? ( 
+        __dofind+=1; //debugging info
+        GetToggleCommandState(1156) ? (
+          Main_OnCommand(1156,0);   //turn off grouping 
+          statecache=0;
+        );  
+       
+        );
+        
+      !found ?  (
+          lastknown && !GetToggleCommandState(1156) ? (
+            Main_OnCommand(1156,0);   //turn on grouping 
+          statecache=1;
+          );
+        );  
+        
+      newselection=0; 
+          
+    );      
+            
+    selectedcache!=CountSelectedMediaItems() || firstselected!=GetSelectedMediaItem(project, 0)  || restate ? (
+      newselection=1;  
+      restate=0; found=0;
+    );    
+
+  get_action_context("",_AsectionID,_AcmdID,"","","");
+  SetToggleCommandState(_AsectionID,_AcmdID, 1);
+  
+  defer("GroupDefeat()");    
+
+
+);
+
+#extname="Group Defeat";
+
+project=EnumProjects(-1, "");
+GroupDefeat();
+
+       atexit(
+         "SetToggleCommandState(_AsectionID,_AcmdID, 0);
+         RefreshToolbar2(_AsectionID,_AcmdID)"
+       );
+
+  
+        
