@@ -1,0 +1,51 @@
+//@description Set Group Defeat
+//@version 1.0
+//@author JamesHE
+//@about
+//  # Assigns A Group to be "Group Defeated"
+//  # If grouping is enabled and any selected item is in a Defeated Group. REAPER'S Grouping will be disabled
+//  # "Options: Selecting one grouped item selects group" is obeyed - So this is a way to define a group for selection only
+//  # Groups are stored in each Project Extended state. 
+//  * Currently non-functional with unsaved projects. 
+//  * Currently no way to Toggle the group defeat off or delete ExtState data. 
+//  i To turn off A Groups Defeat status, Ungroup the items And regroup
+
+
+
+
+function debugExtState(proj,section)local(i,keyout,valout)
+(
+  #debugstr=""; 
+  i=0; 
+  while(EnumProjExtState(proj, section, i, keyOut=#, valOut=#) )  (    
+      strcat(#debugstr,keyOut);
+      strcat(#debugstr,"\n");
+      strcat(#debugstr, valOut);
+      strcat(#debugstr,"\r\n \r\n");
+      //xlen=strlen(valout);
+      i+=1;      
+  );       
+  ShowConsoleMsg(#debugstr); 
+); 
+
+
+
+proj=EnumProjects(-1, #projectname);
+#extname="Group Defeat";
+groupid=GetMediaItemInfo_Value(GetSelectedMediaItem(0, 0);, "I_GROUPID");//get the group of the first selected item
+idx=1; found=0;
+  
+while (EnumProjExtState(proj, #extname, idx, #keyOut, #valOut) && !found) 
+(
+    match("Group %03i",#KeyOut,storedgroupid);
+    storedgroupid==groupID ? found=1;
+    idx+=1;
+  );
+  !found ? (
+    sprintf(#Key,"Group %03i",groupid);
+    SetProjExtState(proj, #extname, #key, "Group Defeated");
+); 
+  
+  
+  
+//debugExtState(proj,#extname);
