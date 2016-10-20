@@ -68,7 +68,9 @@ function GroupDefeat()
       newselection=0; 
           
     );      
-            
+    
+    statecache!=GetToggleCommandState(1156) ? restate=1;    
+    
     selectedcache!=CountSelectedMediaItems() || firstselected!=GetSelectedMediaItem(project, 0)  || restate ? (
       newselection=1;  
       restate=0; found=0;
